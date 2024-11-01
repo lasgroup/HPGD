@@ -1,0 +1,76 @@
+# Experiment
+random_seed: 0
+num_seeds: 10
+environment:
+  name: TaxDesign
+  action_discretization:
+    hours_worked_n: 10
+    hours_worked_scale: 0.89
+    consumption_n: 5
+    consumption_scale: 1.25
+  params:
+    max_steps_in_episode: 200
+    reward_params:
+      prices: [1.0, 1.0, 1.0]
+      consumption_preferences:
+       - [0.6, 0.3, 0.1]
+       - [0.1, 0.7, 0.2]
+      consumption_tax_rate: [0.3, 0.3, 0.3]
+      work_disutility: 0.1
+      accumulated_asset_utility_scale: 1.0
+      social_welfare_asset_utility_scale: 0.0
+      social_welfare_tax_utility: 5.0
+      social_welfare_consumption_scale: 15.0
+    transition_params:
+      asset_range: [-100.0, 100.0]
+      wage: 1.0
+      income_tax_rate: 0.3
+      transition_std: 5.0
+lower_optimisation:
+  algo: q_learning
+  discount_factor: 0.9
+  reg_lambda: 0.3
+  network_params:
+    hidden_layers: [64, 64]
+    activation: "relu"
+    max_grad_norm: 1.0
+    correlated_action_dimensions: False
+    optimizer:
+      type: "adam"
+      params:
+        learning_rate: 5.0e-5
+#        eps: 1.0e-4
+  training:
+    num_steps: 300_000
+    buffer_size: 10_000
+    batch_size: 1_000
+    num_envs: 10
+    epsilon_greedy:  # Not yet implemented
+      start: 1.0
+      end: 0.1
+      anneal_time: 100_000
+    learning_starts: 10_000
+    training_interval: 10
+    target_update_interval: 5_000
+    target_update_learning_rate: 1.0
+upper_optimisation:
+  discount_factor: 0.9
+  num_estimation_steps: 60_000
+  num_outer_iter: 1_000
+  model_params:
+    activation: "sigmoid"
+    scale: [0.0, 2.0]
+    optimizer: "sgd"
+    learning_rate: 0.01
+    max_grad_norm: 1.0
+  # Zero-order parameters
+  zero_order_perturbation_constant: 50.0
+  # HPGD parameters
+  transition_logprob_grad_clip: 1.0
+  value_model_params:
+    layer_size: [64,]  # Not yet implemented / hardcoded
+    optimizer_params:
+      learning_rate: 1.0e-4
+      max_grad_norm: 1.0
+    num_training_steps: 5_000
+    use_time: False

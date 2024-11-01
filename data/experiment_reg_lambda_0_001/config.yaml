@@ -1,0 +1,48 @@
+# Experiment
+random_seed: 0
+num_seeds: 10
+# Environment
+environment:
+  name: ConfigurableFourRooms
+  reward_function: "default"
+  available_goals: [[1, 9], [11, 11]]
+  available_init_pos: [[4, 1]]
+  resample_init_pos_prob: [.NAN]
+  resample_goal_probs: [.NAN]
+  fail_prob: 0.33
+  max_steps_in_episode: 200
+configuration:
+  incentive:
+    activation_function: "softmax"
+    range: [0.0, -0.2]
+    temperature: 1.0
+    coordinates: "all"
+# lower-level optimisation params
+lower_optimisation:
+  algo: value_iteration
+  n_policy_iter: 100
+  n_value_iter: 5
+  discount_factor: 0.99
+  regularization: "KL_divergence"
+  reg_lambda: 0.001
+  reg_lambda_decay: 1.0
+# Upper-level optimisation params
+upper_optimisation:
+  discount_factor: 0.99
+  incentive_reg_param: [1.0, 2.0, 3.0, 4.0, 5.0]  # Grid search
+  reward_function:
+    type: "positive"
+    target_state: [8, 4]
+  optimiser: "sgd"
+  max_grad_norm: 1.0
+  learning_rate: [0.5, 0.1, 0.05, 0.01]  # Grid search
+  learning_rate_schedule:
+    type: "constant"
+    args: {}
+  # Bilevel opt params
+  num_envs: 5
+  num_total_steps: 10_000
+  num_outer_iter: 10_000
+  advantage_gradient_sampling: "on_policy"
+  # Zero order params
+  zero_order_perturbation_constant: [0.01, 0.1, 0.5, 1.0]  # Grid search

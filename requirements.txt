@@ -1,0 +1,9 @@
+dm-tree==0.1.8
+jax==0.4.21
+flax==0.7.4
+jaxopt==0.8.3
+chex==0.1.85
+distrax==0.1.5
+gymnax==0.0.6
+flashbax==0.1.2
+jupyter==1.0.0
